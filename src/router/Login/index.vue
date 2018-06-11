@@ -91,7 +91,6 @@ export default {
             line-height: 46px;
             border-radius: 23px;
             background: @main1;
-
             color: #fff;
             font-weight: bold;
             font-size: 16px;
