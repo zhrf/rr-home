@@ -22,7 +22,7 @@
           <div class="login-button-submit" @click="submit">登录</div>
         </li>
         <li class="login-form-item">
-          <div class="login-form-signin"><span>没有账号？</span><a class="login-button-signin" href="">注册</a></div>
+          <div class="login-form-signin"><span>没有账号？</span><a @click="goPage('/signIn')" class="login-button-signin" href="javascript:;">注册</a></div>
         </li>
       </ul>
     </div>
@@ -41,6 +41,11 @@ export default {
   methods: {
     submit () {
       console.log(this.username, md5(this.password))
+    },
+    goPage (path) {
+      if (path) {
+        this.$router.push(path)
+      }
     }
   }
 }
