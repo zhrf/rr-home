@@ -35,6 +35,12 @@ export default {
   methods: {
     singIn () {
       console.log(this.username, md5(this.password))
+      this.$http.get('/someUrl').then(response => {
+        // get body data
+        this.someData = response.body
+      }, response => {
+        // error callback
+      })
     }
   }
 }
