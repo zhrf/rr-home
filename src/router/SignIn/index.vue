@@ -1,10 +1,12 @@
 <template>
   <div class="signIn">
-    <div class="signIn-head">
+    <div class="signIn-head" @click="selectImg">
       <img src="./touxiang.jpg" alt="">
     </div>
     <div class="signIn-body">
       <ul class="signIn-form">
+        <input id="fileImage" class="fileImage" type="file"  accept="image/*" size="60">
+        <img src="http://localhost:10006/images/abc.png" alt="">
         <li class="signIn-form-item">
           <div class="signIn-form-input">
             <input type="text" v-model="username" placeholder="用户名">
@@ -32,12 +34,32 @@ export default {
       password: ''
     }
   },
+  mounted () {
+    let fileImageInput = document.getElementById('fileImage')
+    fileImageInput.addEventListener('change', () => {
+      let fileImage = fileImageInput.files
+      let formData = new FormData()
+      formData.append('dimg', fileImage[0])
+      formData.append('mid', 1)
+      this.$http.post('http://localhost:10006/users/update', formData).then(response => {
+        console.log(response)
+      }, response => {
+        // error callback
+      })
+    })
+  },
   methods: {
+    selectImg () {
+      document.getElementById('fileImage').click()
+    },
     singIn () {
       console.log(this.username, md5(this.password))
-      this.$http.get('/someUrl').then(response => {
-        // get body data
-        this.someData = response.body
+      let param = {
+        username: this.username,
+        password: md5(this.password)
+      }
+      this.$http.post('http://localhost:10006/users/signIn', param).then(response => {
+        console.log(response)
       }, response => {
         // error callback
       })
