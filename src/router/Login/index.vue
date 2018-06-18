@@ -7,12 +7,12 @@
       <ul class="login-form">
         <li class="login-form-item">
             <div class="login-form-input">
-                <input type="text" v-model="username" placeholder="用户名">
+                <input type="text" v-model="form.username" placeholder="用户名">
             </div>
         </li>
         <li class="login-form-item">
             <div class="login-form-input">
-                <input type="password" v-model="password" placeholder="密码">
+                <input type="password" v-model="form.password" placeholder="密码">
             </div>
         </li>
         <li class="login-form-item">
@@ -25,22 +25,46 @@
           <div class="login-form-signin"><span>没有账号？</span><a @click="goPage('/signIn')" class="login-button-signin" href="javascript:;">注册</a></div>
         </li>
       </ul>
+      <!-- <mt-spinner type="snake" color="yellow"></mt-spinner> -->
     </div>
   </div>
 </template>
 
 <script>
 import md5 from 'md5'
+import {Spinner, Indicator, MessageBox} from 'mint-ui'
 export default {
   data () {
     return {
-      username: '',
-      password: ''
+      form: {
+        username: '',
+        password: ''
+      }
     }
+  },
+  components: {
+    mtSpinner: Spinner
   },
   methods: {
     submit () {
-      console.log(this.username, md5(this.password))
+      Indicator.open('登录中')
+      let params = {
+        username: this.form.username,
+        password: md5(this.form.password)
+      }
+      this.$http.post('/users/login', params).then(res => {
+        Indicator.close()
+        res = res.body
+        if (res.status === '1') {
+          this.goPage('/')
+        } else {
+          MessageBox('登录失败')
+        }
+      }, err => {
+        console.log(err)
+        Indicator.close()
+        MessageBox('登录失败')
+      })
     },
     goPage (path) {
       if (path) {
@@ -73,7 +97,7 @@ export default {
         width: 100%; // height: 32px;
         margin-bottom: 10px;
         .login-form-input {
-          padding: 5px 10px 5px 10px;
+          padding: 5px 20px;
           border: 2px solid @assist2;
           border-radius: 23px;
           box-sizing: border-box;
@@ -81,7 +105,7 @@ export default {
             width: 100%;
             height: 32px;
             line-height: 32px;
-            font-size: 14px;
+            font-size: 18px;
             &::-webkit-input-placeholder{
                 color: @assist2;
                 opacity:1;
